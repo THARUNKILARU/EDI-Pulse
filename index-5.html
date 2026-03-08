@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EDI Pulse | Healthcare EDI Insights by Tharun Kilaru</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --teal:#0a4a5a;--cyan:#00c49a;--cyan2:#00e8b5;
+  --bg:#f7f5f0;--white:#ffffff;--ink:#1a1a1a;
+  --muted:#6b6b6b;--border:#e0ddd5;
+  --tag-bg:#e8f7f3;--tag-txt:#0a5a47;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:'Source Serif 4',Georgia,serif;overflow-x:hidden;}
+
+/* NAV */
+nav{background:var(--white);border-bottom:2px solid var(--teal);position:sticky;top:0;z-index:100;}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 1.5rem;}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;cursor:pointer;}
+.logo-box{width:38px;height:38px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-family:'DM Mono',monospace;font-size:.62rem;line-height:1.2;text-align:center;font-weight:500;}
+.logo-name{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--teal);}
+.logo-name span{color:var(--cyan);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:.88rem;letter-spacing:.02em;transition:color .2s;cursor:pointer;}
+.nav-links a:hover{color:var(--teal);}
+.nav-btn{background:var(--teal);color:var(--white);padding:.45rem 1rem;border-radius:4px;text-decoration:none;font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.04em;transition:background .2s;cursor:pointer;border:none;}
+.nav-btn:hover{background:#0d6b80;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.ham span{width:22px;height:2px;background:var(--teal);display:block;border-radius:2px;}
+@media(max-width:680px){.nav-links,.nav-btn{display:none;}.ham{display:flex;}}
+
+/* HERO */
+.hero{background:var(--teal);padding:3.5rem 1.5rem 3rem;position:relative;overflow:hidden;}
+.hero::after{content:'EDI';position:absolute;right:-1rem;top:0;font-family:'DM Serif Display',serif;font-size:13rem;color:rgba(255,255,255,.03);pointer-events:none;line-height:1;}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;}
+.kicker-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase;margin-bottom:.9rem;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,5.5vw,3.2rem);color:var(--white);line-height:1.15;max-width:680px;margin-bottom:1rem;}
+.hero h1 em{color:var(--cyan);font-style:italic;}
+.hero p{color:rgba(255,255,255,.6);font-size:.95rem;line-height:1.75;max-width:500px;margin-bottom:2rem;}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.hstat-n{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--cyan);display:block;}
+.hstat-l{font-size:.7rem;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;}
+.author-row{display:flex;align-items:center;gap:.75rem;padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.1);}
+.av{width:42px;height:42px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:var(--teal);font-size:1rem;font-weight:700;flex-shrink:0;}
+.author-name{font-size:.9rem;color:var(--white);font-weight:600;}
+.author-role{font-size:.75rem;color:rgba(255,255,255,.45);}
+
+/* LAYOUT */
+.wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem;}
+.sec-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);background:var(--teal);display:inline-block;padding:.22rem .55rem;border-radius:2px;margin-bottom:1.2rem;}
+
+/* FEATURED CARD */
+.featured-section{padding:3rem 0 1.5rem;}
+.feat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow .25s,transform .2s;}
+.feat-card:hover{box-shadow:0 12px 40px rgba(10,74,90,.12);transform:translateY(-3px);}
+.feat-banner{height:200px;background:linear-gradient(135deg,#0a4a5a,#0d7a96 50%,#00c49a);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.feat-banner::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1'%3E%3Crect x='5' y='5' width='50' height='50'/%3E%3Crect x='15' y='15' width='30' height='30'/%3E%3Cline x1='5' y1='5' x2='55' y2='55'/%3E%3C/g%3E%3C/svg%3E") repeat;}
+.feat-num{font-family:'DM Mono',monospace;font-size:5rem;color:rgba(255,255,255,.12);position:relative;}
+.feat-badge{position:absolute;top:1rem;left:1rem;background:var(--cyan);color:var(--teal);font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.1em;padding:.25rem .6rem;border-radius:2px;font-weight:500;}
+.feat-body{padding:1.75rem;}
+.feat-title{font-family:'DM Serif Display',serif;font-size:clamp(1.3rem,3vw,1.8rem);color:var(--teal);line-height:1.2;margin:.7rem 0;}
+.feat-excerpt{color:var(--muted);font-size:.9rem;line-height:1.75;margin-bottom:1.2rem;}
+.tag{display:inline-block;background:var(--tag-bg);color:var(--tag-txt);font-family:'DM Mono',monospace;font-size:.65rem;padding:.18rem .5rem;border-radius:2px;letter-spacing:.04em;margin-right:.35rem;margin-bottom:.35rem;}
+.meta{display:flex;align-items:center;gap:.75rem;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);}
+.dot{width:3px;height:3px;background:var(--border);border-radius:50%;display:inline-block;}
+.read-btn{display:inline-flex;align-items:center;gap:.4rem;color:var(--teal);font-family:'DM Mono',monospace;font-size:.78rem;font-weight:500;border-bottom:1.5px solid var(--cyan);padding-bottom:1px;text-decoration:none;background:none;border-top:none;border-left:none;border-right:none;cursor:pointer;transition:gap .2s;}
+.read-btn:hover{gap:.7rem;}
+
+/* GRID */
+.grid-section{padding:2rem 0 4rem;}
+.grid{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+@media(min-width:580px){.grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:880px){.grid{grid-template-columns:repeat(3,1fr);}}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .25s,transform .2s;display:flex;flex-direction:column;}
+.card:hover{box-shadow:0 8px 28px rgba(10,74,90,.1);transform:translateY(-2px);}
+.thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.2;position:relative;}
+.t1{background:linear-gradient(135deg,#0a4a5a,#1a8fa8);}
+.t2{background:linear-gradient(135deg,#1a3a2a,#2d8a5a);}
+.t3{background:linear-gradient(135deg,#3a1a0a,#a85a1a);}
+.t4{background:linear-gradient(135deg,#1a0a3a,#5a1a8a);}
+.card-body{padding:1.2rem;flex:1;display:flex;flex-direction:column;}
+.card-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--teal);line-height:1.3;margin:.55rem 0 .55rem;flex:1;}
+.card-excerpt{color:var(--muted);font-size:.8rem;line-height:1.65;margin-bottom:.9rem;}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:.7rem;border-top:1px solid var(--border);}
+
+/* ARTICLE VIEW */
+#article-view{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;}
+.prog{height:3px;background:var(--cyan);position:fixed;top:0;left:0;z-index:210;width:0;transition:width .1s;}
+.art-nav{background:var(--white);border-bottom:1px solid var(--border);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;}
+.back{display:flex;align-items:center;gap:.5rem;color:var(--teal);background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:.8rem;font-weight:500;}
+.art-body{max-width:720px;margin:0 auto;padding:3rem 1.5rem 6rem;}
+.art-body .art-kicker{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);background:var(--teal);display:inline-block;padding:.22rem .55rem;border-radius:2px;margin-bottom:1.2rem;}
+.art-body h1{font-family:'DM Serif Display',serif;font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--teal);line-height:1.15;margin-bottom:.9rem;}
+.art-lead{font-size:1.05rem;line-height:1.8;color:var(--muted);border-left:3px solid var(--cyan);padding-left:1.2rem;margin:1.5rem 0;}
+.art-meta{display:flex;align-items:center;gap:.75rem;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.art-body h2{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--teal);margin:2.25rem 0 .9rem;}
+.art-body h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--ink);margin:1.75rem 0 .65rem;}
+.art-body p{font-size:.97rem;line-height:1.85;color:#2a2a2a;margin-bottom:1.2rem;}
+.art-body ul,.art-body ol{padding-left:1.5rem;margin-bottom:1.2rem;}
+.art-body li{font-size:.95rem;line-height:1.8;color:#2a2a2a;margin-bottom:.35rem;}
+.art-body strong{color:var(--teal);}
+.callout{background:var(--tag-bg);border-left:3px solid var(--cyan);padding:1.1rem 1.4rem;border-radius:0 8px 8px 0;margin:1.75rem 0;}
+.callout-title{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;color:var(--tag-txt);text-transform:uppercase;margin-bottom:.45rem;}
+.callout p{margin:0;color:#1a3a2a;font-size:.93rem;}
+.code-box{background:#0d1f2d;color:#00e8b5;font-family:'DM Mono',monospace;font-size:.8rem;padding:1.2rem 1.4rem;border-radius:8px;margin:1.4rem 0;overflow-x:auto;line-height:1.65;}
+.code-box .cm{color:rgba(255,255,255,.3);}
+.tbl-wrap{overflow-x:auto;margin:1.4rem 0;}
+.dtbl{width:100%;border-collapse:collapse;font-size:.86rem;}
+.dtbl th{background:var(--teal);color:var(--white);padding:.6rem .9rem;text-align:left;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.04em;}
+.dtbl td{padding:.55rem .9rem;border-bottom:1px solid var(--border);color:#2a2a2a;}
+.dtbl tr:nth-child(even) td{background:var(--tag-bg);}
+.art-tags{display:flex;flex-wrap:wrap;gap:.45rem;margin:2.5rem 0;padding-top:1.75rem;border-top:1px solid var(--border);}
+.author-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.4rem;display:flex;gap:1rem;margin-top:1.75rem;}
+.author-box .av{width:50px;height:50px;font-size:1.15rem;}
+.author-box-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--teal);margin-bottom:.2rem;}
+.author-box-bio{font-size:.83rem;color:var(--muted);line-height:1.6;}
+
+/* NEWSLETTER */
+.newsletter{background:var(--teal);padding:3rem 1.5rem;margin:2rem 0;}
+.nl-inner{max-width:540px;margin:0 auto;text-align:center;}
+.nl-inner h2{font-family:'DM Serif Display',serif;font-size:1.75rem;color:var(--white);margin-bottom:.5rem;}
+.nl-inner p{color:rgba(255,255,255,.55);font-size:.88rem;margin-bottom:1.4rem;}
+.nl-form{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;}
+.nl-form input{flex:1;min-width:200px;padding:.7rem 1rem;border:none;border-radius:4px;font-family:'Source Serif 4',serif;font-size:.88rem;outline:none;}
+.nl-btn{background:var(--cyan);color:var(--teal);border:none;padding:.7rem 1.4rem;border-radius:4px;font-family:'DM Mono',monospace;font-size:.8rem;font-weight:500;cursor:pointer;transition:background .2s;}
+.nl-btn:hover{background:var(--cyan2);}
+
+/* ABOUT */
+.about-section{padding:3.5rem 0;}
+.about-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:700px;}
+.about-top{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+.about-av{width:60px;height:60px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;color:var(--cyan);font-family:'DM Serif Display',serif;font-size:1.4rem;flex-shrink:0;}
+.about-n{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--teal);}
+.about-r{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);}
+.about-p{color:var(--muted);line-height:1.8;font-size:.93rem;margin-bottom:1.2rem;}
+.about-links{display:flex;gap:.65rem;flex-wrap:wrap;}
+.alink{padding:.42rem .95rem;border-radius:4px;font-family:'DM Mono',monospace;font-size:.75rem;text-decoration:none;cursor:pointer;}
+.alink-primary{background:var(--teal);color:var(--white);}
+.alink-sec{background:var(--tag-bg);color:var(--tag-txt);}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.45);padding:2.5rem 1.5rem;text-align:center;}
+.footer-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:.4rem;}
+.footer-logo span{color:var(--cyan);}
+footer p{font-size:.8rem;line-height:1.7;}
+footer a{color:var(--cyan);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="goHome()">
+      <div class="logo-box">EDI<br>PULSE</div>
+      <span class="logo-name">EDI <span>Pulse</span></span>
+    </div>
+    <ul class="nav-links">
+      <li><a onclick="goHome()">Home</a></li>
+      <li><a href="#articles">Articles</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <button class="nav-btn" onclick="window.open('https://linkedin.com/in/tharunkilaru','_blank')">Connect on LinkedIn</button>
+    <button class="ham" onclick="goHome()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ====== HOME ====== -->
+<div id="home-view">
+
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="kicker-label">Healthcare EDI &nbsp;&#183;&nbsp; HIPAA X12 &nbsp;&#183;&nbsp; Integration Insights</p>
+      <h1>Where Healthcare Data <em>Integration</em> Gets Explained Simply.</h1>
+      <p>Deep-dive articles on HIPAA X12 transactions, EDI best practices, trading partner onboarding, and the future of healthcare interoperability  &mdash;  written by a practitioner, for practitioners.</p>
+      <div class="hero-stats">
+        <div><span class="hstat-n">5</span><span class="hstat-l">Articles</span></div>
+        <div><span class="hstat-n">4+</span><span class="hstat-l">Yrs Experience</span></div>
+        <div><span class="hstat-n">20+</span><span class="hstat-l">Topics Covered</span></div>
+      </div>
+      <div class="author-row">
+        <div class="av">TK</div>
+        <div>
+          <div class="author-name">Tharun Kilaru</div>
+          <div class="author-role">Senior EDI Specialist &nbsp;&#183;&nbsp; IBA &nbsp;&#183;&nbsp; Former UHG &nbsp;&#183;&nbsp; PetSmart &nbsp;&#183;&nbsp; APL Logistics</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- FEATURED -->
+    <div class="featured-section">
+      <div class="sec-label">&#9733; Featured Article</div>
+      <div class="feat-card" onclick="openArticle('art0')">
+        <div class="feat-banner">
+          <span class="feat-num">834</span>
+          <div class="feat-badge">&#9733; Must Read</div>
+        </div>
+        <div class="feat-body">
+          <span class="tag">HIPAA</span>
+          <span class="tag">834</span>
+          <span class="tag">Enrollment</span>
+          <span class="tag">Beginner Friendly</span>
+          <div class="feat-title">The Complete Beginner's Guide to HIPAA 834 Benefit Enrollment Files</div>
+          <p class="feat-excerpt">If you've ever stared at an 834 file and wondered what those segments mean  &mdash;  this guide is for you. I break down every loop, every segment, and every common mistake in the most practical way possible. After 4 years of working with these files daily, here's everything I wish someone had told me on day one.</p>
+          <div class="meta">
+            <span>Tharun Kilaru</span><span class="dot"></span>
+            <span>March 2026</span><span class="dot"></span>
+            <span>12 min read</span>
+          </div>
+          <br/>
+          <button class="read-btn" onclick="openArticle('art0')">Read Full Article &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTICLE GRID -->
+    <div class="grid-section" id="articles">
+      <div class="sec-label">All Articles</div>
+      <div class="grid">
+
+        <div class="card" onclick="openArticle('art1')">
+          <div class="thumb t1"><span>&#9877;</span></div>
+          <div class="card-body">
+            <div><span class="tag">837</span><span class="tag">Claims</span></div>
+            <div class="card-title">837P vs 837I vs 837D  &mdash;  What's the Real Difference?</div>
+            <p class="card-excerpt">Three transaction sets. One number. Endless confusion. A clear breakdown of professional, institutional, and dental claims.</p>
+            <div class="card-footer">
+              <div class="meta"><span>Mar 2026</span><span class="dot"></span><span>8 min</span></div>
+              <button class="read-btn" onclick="event.stopPropagation();openArticle('art1')">Read &#8594;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="openArticle('art2')">
+          <div class="thumb t2"><span>&#9889;</span></div>
+          <div class="card-body">
+            <div><span class="tag">Cleo CIC</span><span class="tag">Production</span></div>
+            <div class="card-title">How I Cut EDI Incident Resolution Time by 30% at UHG</div>
+            <p class="card-excerpt">Real story. Real numbers. How smarter monitoring transformed our production support game.</p>
+            <div class="card-footer">
+              <div class="meta"><span>Feb 2026</span><span class="dot"></span><span>7 min</span></div>
+              <button class="read-btn" onclick="event.stopPropagation();openArticle('art2')">Read &#8594;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="openArticle('art3')">
+          <div class="thumb t3"><span>&#129309;</span></div>
+          <div class="card-body">
+            <div><span class="tag">Onboarding</span><span class="tag">Partners</span></div>
+            <div class="card-title">Trading Partner Onboarding: How I Went From 6 Weeks to 3</div>
+            <p class="card-excerpt">Reusable templates and a systematic approach that cuts partner go-live time in half.</p>
+            <div class="card-footer">
+              <div class="meta"><span>Jan 2026</span><span class="dot"></span><span>9 min</span></div>
+              <button class="read-btn" onclick="event.stopPropagation();openArticle('art3')">Read &#8594;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" onclick="openArticle('art4')">
+          <div class="thumb t4"><span>&#128302;</span></div>
+          <div class="card-body">
+            <div><span class="tag">FHIR</span><span class="tag">Future</span></div>
+            <div class="card-title">Will APIs Replace EDI in Healthcare? The Honest Answer</div>
+            <p class="card-excerpt">Everyone's talking about FHIR replacing X12. Here's why that's more complicated than it sounds.</p>
+            <div class="card-footer">
+              <div class="meta"><span>Dec 2025</span><span class="dot"></span><span>10 min</span></div>
+              <button class="read-btn" onclick="event.stopPropagation();openArticle('art4')">Read &#8594;</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter">
+    <div class="nl-inner">
+      <h2>Stay Ahead in Healthcare EDI</h2>
+      <p>New articles every two weeks. No spam. Just deep, practical EDI knowledge.</p>
+      <div class="nl-form">
+        <input type="email" placeholder="your@email.com"/>
+        <button class="nl-btn" onclick="alert('Thanks for subscribing!')">Subscribe &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="wrap about-section" id="about">
+    <div class="sec-label">About the Author</div>
+    <div class="about-card">
+      <div class="about-top">
+        <div class="about-av">TK</div>
+        <div>
+          <div class="about-n">Tharun Kilaru</div>
+          <div class="about-r">Senior EDI Specialist &nbsp;&#183;&nbsp; MS Information Studies, Trine University</div>
+        </div>
+      </div>
+      <p class="about-p">I'm a Senior EDI Specialist with 4+ years of hands-on experience in HIPAA X12 integrations, trading partner onboarding, and healthcare data workflows. I've worked at International Benefits Administrators, United Health Group, PetSmart, and APL Logistics  &mdash;  giving me a rare cross-industry perspective on EDI. I started this blog because I couldn't find plain-English explanations of EDI concepts when I was learning. Every article here is what I wish existed when I started out.</p>
+      <div class="about-links">
+        <a href="https://linkedin.com/in/tharunkilaru" target="_blank" class="alink alink-primary">LinkedIn &#8594;</a>
+        <a href="https://tharun-kilaru-portfolio.vercel.app" target="_blank" class="alink alink-sec">Portfolio &#8594;</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">EDI <span>Pulse</span></div>
+    <p>Healthcare EDI Insights by <a href="#">Tharun Kilaru</a><br/>Senior EDI Specialist &nbsp;&#183;&nbsp; HIPAA &nbsp;&#183;&nbsp; X12 &nbsp;&#183;&nbsp; Cleo CIC &nbsp;&#183;&nbsp; IBM Sterling</p>
+    <p style="margin-top:1rem;">&#169; 2026 Tharun Kilaru. All rights reserved.</p>
+  </footer>
+
+</div><!-- end home-view -->
+
+
+<!-- ====== ARTICLE VIEW ====== -->
+<div id="article-view">
+  <div class="prog" id="prog-bar"></div>
+  <div class="art-nav">
+    <button class="back" onclick="goHome()">&#8592; Back to EDI Pulse</button>
+    <span id="art-read-time" style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);"></span>
+  </div>
+  <div class="art-body" id="art-body-content"></div>
+</div>
+
+
+<!-- ====== HIDDEN ARTICLE CONTENT ====== -->
+
+<div id="art0" style="display:none;">
+  <span class="art-kicker">HIPAA &#183; Enrollment</span>
+  <h1>The Complete Beginner's Guide to HIPAA 834 Benefit Enrollment Files</h1>
+  <div class="art-lead">If you have ever stared at an 834 file and wondered what those segments mean  &mdash;  this guide is for you. After 4 years working with these files daily, here is everything I wish someone told me on day one.</div>
+  <div class="art-meta">
+    <span>Tharun Kilaru</span><span class="dot"></span>
+    <span>March 5, 2026</span><span class="dot"></span>
+    <span>12 min read</span>
+  </div>
+  <h2>What is an 834 Transaction Set?</h2>
+  <p>The 834  &mdash;  officially called the "Benefit Enrollment and Maintenance" transaction  &mdash;  is the electronic document that employers, insurance companies, and benefits administrators use to enroll or change member coverage information. Think of it as a digital form that says: this person works at Company X, please give them Health Plan Y starting on this date.</p>
+  <div class="callout"><div class="callout-title">Quick Definition</div><p>834 = Benefit Enrollment. It tells the insurance company WHO is enrolled, in WHAT plan, and WHEN their coverage starts or changes.</p></div>
+  <h2>The Structure of an 834 File</h2>
+  <p>Every 834 file is wrapped in what we call an envelope  &mdash;  like a series of envelopes inside envelopes. Each one gives important information before you get to the actual content.</p>
+  <div class="code-box">
+<span class="cm">// The EDI 834 Envelope Hierarchy</span>
+ISA  &#8592; Interchange Control Header (outermost envelope)
+  GS   &#8592; Functional Group Header
+    ST   &#8592; Transaction Set Header
+      BGN  &#8592; Beginning Segment (transaction purpose)
+        Loop 1000A &#8212; Sponsor (the employer/payer)
+        Loop 1000B &#8212; Receiver (the insurance company)
+          Loop 2000 &#8212; Member Level
+            Loop 2100 &#8212; Member Detail (name, DOB, SSN)
+            Loop 2300 &#8212; Health Coverage
+            Loop 2700 &#8212; Member Reporting Categories
+    SE   &#8592; Transaction Set Trailer
+  GE   &#8592; Functional Group Trailer
+IEA  &#8592; Interchange Control Trailer</div>
+  <h2>Key Segments You Must Know</h2>
+  <div class="tbl-wrap"><table class="dtbl">
+    <thead><tr><th>Segment</th><th>Name</th><th>What It Contains</th></tr></thead>
+    <tbody>
+      <tr><td>ISA</td><td>Interchange Control Header</td><td>Sender ID, Receiver ID, date, time, control number</td></tr>
+      <tr><td>BGN</td><td>Beginning Segment</td><td>Transaction purpose: 00=Original, 02=Change, 03=Cancel</td></tr>
+      <tr><td>INS</td><td>Member Indicator</td><td>Is this person a subscriber, spouse, or dependent?</td></tr>
+      <tr><td>REF</td><td>Reference Numbers</td><td>Member ID, SSN, group number, policy number</td></tr>
+      <tr><td>DTP</td><td>Date/Time Reference</td><td>Benefit begin date (348), end date (349), birth date (336)</td></tr>
+      <tr><td>NM1</td><td>Individual/Org Name</td><td>Member name, employer name, insurance company name</td></tr>
+      <tr><td>HD</td><td>Health Coverage</td><td>Coverage type: medical, dental, vision  &mdash;  and plan code</td></tr>
+    </tbody>
+  </table></div>
+  <h2>The 5 Most Common 834 Mistakes</h2>
+  <h3>1. Wrong Transaction Purpose Code in BGN02</h3>
+  <p>This is number one for a reason. I have seen entire files fail to process because someone sent a Change (02) file when the member was not previously enrolled. Always check: if this is a brand new member, BGN02 must be <strong>00  &mdash;  Original</strong>.</p>
+  <h3>2. Missing or Incorrect DTP*348</h3>
+  <p>The DTP*348 segment tells the system when coverage starts. If missing or in the wrong format, the member either gets coverage from the wrong date or gets rejected entirely. Format must be CCYYMMDD.</p>
+  <h3>3. Incorrect INS Segment Relationship Codes</h3>
+  <p>INS02 defines the relationship: 18=Self, 01=Spouse, 19=Child. Sending the wrong code means a spouse gets enrolled as the subscriber. This creates billing nightmares downstream.</p>
+  <h3>4. Duplicate Control Numbers</h3>
+  <p>The ISA13 control number must be unique for every file. If your system resets its counter after a restart, you start sending ISA13=000000001 again and every file gets rejected as a duplicate.</p>
+  <h3>5. Missing Loop 2700 Reporting Categories</h3>
+  <p>Some trading partners require Loop 2700 for COBRA, HIPAA special enrollment, or CMS reporting. Skipping this when required causes silent failures  &mdash;  the file processes but data is incomplete.</p>
+  <div class="callout"><div class="callout-title">Pro Tip from the Trenches</div><p>Always run an 834 through a HIPAA compliance validator before sending to a trading partner. Tools like Edifecs can catch structural errors before they become 2am production incidents.</p></div>
+  <h2>Testing Your 834  &mdash;  A Practical Checklist</h2>
+  <ul>
+    <li>Verify ISA sender/receiver IDs match what the partner expects</li>
+    <li>Confirm BGN02 transaction purpose matches the operation</li>
+    <li>Validate all DTP segments use CCYYMMDD format</li>
+    <li>Check that all required loops are present: 1000A, 1000B, 2000, 2100, 2300</li>
+    <li>Confirm member count in SE02 matches actual transaction count</li>
+    <li>Test with a 999 acknowledgment  &mdash;  confirm AK501=A (Accepted)</li>
+    <li>Validate family relationships: subscriber, spouse, dependents are correct</li>
+    <li>Check coverage codes in HD03 match the plan accepted values</li>
+  </ul>
+  <h2>Final Thoughts</h2>
+  <p>The 834 looks intimidating at first  &mdash;  hundreds of lines of what looks like gibberish. But once you understand the envelope structure and key segments, patterns start to emerge. Every file is telling a story: who this person is, what coverage they need, and when it starts. Your job is to make sure that story is told accurately and in a format the receiving system can understand.</p>
+  <div class="art-tags">
+    <span class="tag">HIPAA</span><span class="tag">834</span><span class="tag">Enrollment</span><span class="tag">X12</span><span class="tag">Beginner Friendly</span>
+  </div>
+</div>
+
+
+<div id="art1" style="display:none;">
+  <span class="art-kicker">HIPAA &#183; Claims Processing</span>
+  <h1>837P vs 837I vs 837D &#8212; What's the Real Difference?</h1>
+  <div class="art-lead">Three transaction sets. One number. Endless confusion. If you have wondered why healthcare claims have three different 837s, here is the clear breakdown you have been looking for.</div>
+  <div class="art-meta">
+    <span>Tharun Kilaru</span><span class="dot"></span>
+    <span>February 20, 2026</span><span class="dot"></span>
+    <span>8 min read</span>
+  </div>
+  <h2>Why Are There Three 837s?</h2>
+  <p>Healthcare billing is complex because different types of providers bill differently. A doctor's office bills per-service. A hospital bills per-stay. A dentist bills per-procedure. Each has different data structures, code sets, and regulatory requirements. That is why HIPAA created three separate transaction sets under the 837 umbrella.</p>
+  <div class="tbl-wrap"><table class="dtbl">
+    <thead><tr><th>Transaction</th><th>Full Name</th><th>Who Uses It</th><th>Code Set</th></tr></thead>
+    <tbody>
+      <tr><td><strong>837P</strong></td><td>Professional Claim</td><td>Doctors, physicians, outpatient clinics</td><td>CPT / HCPCS</td></tr>
+      <tr><td><strong>837I</strong></td><td>Institutional Claim</td><td>Hospitals, skilled nursing, home health</td><td>ICD-10, DRG, Revenue Codes</td></tr>
+      <tr><td><strong>837D</strong></td><td>Dental Claim</td><td>Dentists, oral surgeons, orthodontists</td><td>CDT / ADA Codes</td></tr>
+    </tbody>
+  </table></div>
+  <h2>837P &#8212; The Professional Claim</h2>
+  <p>The 837P is the most common claim type you will encounter. A physician sees a patient, performs a service, and sends an 837P to get paid. The key is the service line level  &mdash;  each procedure gets its own line with a CPT code in the SV1 segment.</p>
+  <div class="callout"><div class="callout-title">Key 837P Fact</div><p>837P uses Loop 2400 with SV1 segments for professional service details. Each SV1 contains the CPT code, units, and charge amount per service.</p></div>
+  <h2>837I &#8212; The Institutional Claim</h2>
+  <p>Hospital billing is fundamentally different. Instead of individual procedure codes, an 837I describes an entire episode of care  &mdash;  a hospital stay, an ER visit, or a surgical procedure. Billing is at the revenue code level, categorizing services by department: pharmacy, radiology, room and board, and more.</p>
+  <p>The 837I uses the SV2 segment instead of SV1 and includes bill type codes describing the facility type and claim frequency. This is where I see the most complexity in healthcare EDI  &mdash;  a single 837I can have dozens of revenue code lines.</p>
+  <h2>837D &#8212; The Dental Claim</h2>
+  <p>Dental claims use CDT codes maintained by the American Dental Association. The 837D uses the SV3 segment and includes tooth-specific information  &mdash;  actual tooth numbers, surfaces, and dental arch data that simply does not exist in medical billing.</p>
+  <h2>The Claim-to-Payment Workflow</h2>
+  <ol>
+    <li>Provider submits 837 to payer or clearinghouse</li>
+    <li>Clearinghouse validates and forwards to payer</li>
+    <li>Payer sends back 999/277 acknowledgment</li>
+    <li>Payer adjudicates the claim</li>
+    <li>Payer sends 835 Remittance Advice with payment details</li>
+    <li>Provider posts payment to their system</li>
+  </ol>
+  <h2>Common Errors Across All Three</h2>
+  <p>Despite their differences, all three 837 types share common failure points: invalid NPI numbers, mismatched subscriber IDs, incorrect claim frequencies, and date format errors in DTP segments. In my experience at UHG, about 60% of claim rejections traced back to just these four issues.</p>
+  <div class="art-tags">
+    <span class="tag">837</span><span class="tag">Claims</span><span class="tag">HIPAA</span><span class="tag">Healthcare</span><span class="tag">X12</span>
+  </div>
+</div>
+
+
+<div id="art2" style="display:none;">
+  <span class="art-kicker">Production Support &#183; Real Story</span>
+  <h1>How I Cut EDI Incident Resolution Time by 30% at UHG</h1>
+  <div class="art-lead">This is a real story from my time as an EDI Analyst at United Health Group. No theory, no textbook answers  &mdash;  just what actually worked when production was on fire.</div>
+  <div class="art-meta">
+    <span>Tharun Kilaru</span><span class="dot"></span>
+    <span>February 5, 2026</span><span class="dot"></span>
+    <span>7 min read</span>
+  </div>
+  <h2>The Problem: We Were Always Reacting</h2>
+  <p>When I joined United Health Group's EDI team, we found out about production issues when trading partners called to complain. By that time, hundreds of transactions had already failed, SLA timers were running, and we were scrambling through logs trying to figure out what happened.</p>
+  <p>Our average incident resolution time was about 4 hours. In healthcare, that is not just a technical metric  &mdash;  it has real human consequences. Someone at a doctor's office could not verify insurance. Claims were not being processed.</p>
+  <div class="callout"><div class="callout-title">The Goal</div><p>Get from 4-hour average resolution to under 3 hours. Detect issues before trading partners call us.</p></div>
+  <h2>What We Changed  &mdash;  4 Specific Things</h2>
+  <h3>1. Real-Time Dashboard in Cleo Monitoring and Kibana</h3>
+  <p>I built custom event dashboards tracking transaction throughput per trading partner, failed 999/TA1 acknowledgment rates, processing queue depth, and time-to-acknowledgment for critical 837 submissions. When throughput for a specific partner dropped below 80% of their baseline, it triggered an automatic alert.</p>
+  <h3>2. Automated Retry Logic with Escalation</h3>
+  <p>Failed transactions used to sit in an error queue until someone manually noticed. I implemented automated retry mechanisms within CIC  &mdash;  failed transactions retry 3 times at 15-minute intervals. If all 3 retries fail, it auto-creates a ServiceNow incident and alerts the on-call engineer.</p>
+  <h3>3. Splunk Log Analysis Templates</h3>
+  <p>I built a library of Splunk queries for the 10 most common failure patterns. Instead of spending 45 minutes searching logs, engineers run a template query and have a diagnosis in 5 minutes. This alone saved significant time on every incident.</p>
+  <h3>4. Pre-Shift Health Checks</h3>
+  <p>A 10-minute morning routine scanning overnight processing results, acknowledgment rates, and queue depths before the business day starts. Catching issues at 7am means fixing them before anyone is impacted at 9am.</p>
+  <h2>The Results</h2>
+  <p>After three months, average incident resolution time dropped from 4 hours to 2.8 hours  &mdash;  a 30% reduction. We shifted from reactive to proactive, detecting roughly 70% of issues before trading partners reported them.</p>
+  <p>The lesson: in EDI production support, visibility is everything. Build your monitoring first.</p>
+  <div class="art-tags">
+    <span class="tag">Cleo CIC</span><span class="tag">Production Support</span><span class="tag">Monitoring</span><span class="tag">UHG</span><span class="tag">Splunk</span>
+  </div>
+</div>
+
+
+<div id="art3" style="display:none;">
+  <span class="art-kicker">Trading Partners &#183; Best Practices</span>
+  <h1>Trading Partner Onboarding: How I Went From 6 Weeks to 3</h1>
+  <div class="art-lead">Onboarding a new EDI trading partner used to take our team 6 weeks. I built a system that cut that in half. Here is the exact approach  &mdash;  reusable, documented, and repeatable.</div>
+  <div class="art-meta">
+    <span>Tharun Kilaru</span><span class="dot"></span>
+    <span>January 15, 2026</span><span class="dot"></span>
+    <span>9 min read</span>
+  </div>
+  <h2>Why Onboarding Takes So Long</h2>
+  <p>When I first analyzed why trading partner onboarding took 6 weeks, I expected to find a technical bottleneck. What I found instead was mostly process friction: back-and-forth emails, manual configuration steps done from memory, testing phases starting too late, and no standardized documentation. The actual technical work? Maybe 2 weeks total.</p>
+  <h2>The 3-Phase System I Built</h2>
+  <h3>Phase 1: Intake and Standardization</h3>
+  <p>I created a standard intake form capturing everything needed upfront  &mdash;  ISA sender/receiver IDs, connectivity details, transaction sets required, testing contact information, and go-live date. Before this form, we spent weeks chasing information piecemeal.</p>
+  <div class="callout"><div class="callout-title">Key Insight</div><p>90% of onboarding delays happen in the first week because you do not have all the information you need. Fix the intake process and everything downstream gets faster.</p></div>
+  <h3>Phase 2: Template-Based Configuration</h3>
+  <p>In Cleo CIC, I built a library of reusable mapping templates for each transaction type: 834, 837, 835, 270/271. Each template had standard HIPAA compliance rules pre-built. For a new partner, we clone the appropriate template and only customize the partner-specific fields.</p>
+  <p>Before templates: 3 weeks to configure a new partner from scratch. After templates: 3 to 4 days.</p>
+  <h3>Phase 3: Structured Testing</h3>
+  <p>I formalized testing into three stages: connectivity testing, functional testing, and scenario testing. Running these in parallel where possible and having pre-prepared test data cut testing time from 3 weeks to about 1.5 weeks.</p>
+  <h2>Documentation That Actually Gets Used</h2>
+  <p>Every partner onboarding generated a Partner Profile document: configuration settings, test results, known quirks, and escalation contacts. When an issue came up 6 months later, everything was in one place instead of buried in old emails.</p>
+  <h2>Result: 6 Weeks to 3 Weeks</h2>
+  <p>The technology did not change. The platform did not change. What changed was having a repeatable, documented process with the right tools built upfront. Every EDI team should invest in building their onboarding infrastructure  &mdash;  you pay the cost once and collect dividends on every partner after.</p>
+  <div class="art-tags">
+    <span class="tag">Onboarding</span><span class="tag">Trading Partners</span><span class="tag">Cleo CIC</span><span class="tag">Automation</span><span class="tag">Best Practices</span>
+  </div>
+</div>
+
+
+<div id="art4" style="display:none;">
+  <span class="art-kicker">Industry Trends &#183; Career</span>
+  <h1>Will APIs Replace EDI in Healthcare? The Honest Answer</h1>
+  <div class="art-lead">FHIR APIs are everywhere in the headlines. But 5 billion healthcare EDI transactions happen every year. So who is right? Here is the honest, nuanced answer nobody else is giving you.</div>
+  <div class="art-meta">
+    <span>Tharun Kilaru</span><span class="dot"></span>
+    <span>December 10, 2025</span><span class="dot"></span>
+    <span>10 min read</span>
+  </div>
+  <h2>The Question Everyone in EDI is Asking</h2>
+  <p>If you work in healthcare EDI, you have probably heard the narrative: EDI is old technology, FHIR and REST APIs are the future, EDI will be dead in 10 years. It has been said at conferences, in LinkedIn posts, and in job descriptions that suddenly want FHIR experience alongside X12 knowledge.</p>
+  <h2>What FHIR Actually Is</h2>
+  <p>FHIR  &mdash;  Fast Healthcare Interoperability Resources  &mdash;  is a modern API standard developed by HL7 that uses RESTful principles and JSON/XML data formats. Instead of flat-file X12 transactions, FHIR uses structured Resources: Patient, Claim, Coverage, ExplanationOfBenefit. It is developer-friendly and genuinely great for certain use cases.</p>
+  <h2>The Reality on the Ground</h2>
+  <p>Here is what nobody tells you: the healthcare infrastructure running today is massive, deeply interconnected, and built on decades of EDI. Every major payer  &mdash;  UHG, Humana, Aetna, BCBS  &mdash;  processes billions of X12 transactions annually. Their core adjudication systems, billing systems, and clearinghouse integrations are all EDI.</p>
+  <div class="callout"><div class="callout-title">The Real Number</div><p>The healthcare industry processes an estimated 5+ billion EDI transactions per year in the US alone. That infrastructure does not get replaced overnight  &mdash;  or even over a decade.</p></div>
+  <h2>Where FHIR Is Actually Winning</h2>
+  <ul>
+    <li><strong>Patient access:</strong> CMS mandates require payers to expose member data via FHIR APIs</li>
+    <li><strong>Prior authorization:</strong> The CMS-0057 rule is pushing X12 278 toward FHIR workflows</li>
+    <li><strong>Clinical data exchange:</strong> Between providers for care coordination</li>
+    <li><strong>Mobile and consumer apps:</strong> Anywhere needing real-time developer-friendly access</li>
+  </ul>
+  <h2>Where EDI Is Not Going Anywhere</h2>
+  <p>High-volume batch processing  &mdash;  millions of claims, remittances, eligibility checks  &mdash;  is still dominated by EDI. The economics of FHIR do not favor batch processing at massive scale yet. The regulatory frameworks still mandate X12. And the installed base of systems built around EDI is enormous.</p>
+  <h2>My Honest Career Advice</h2>
+  <p>Do not choose between EDI and FHIR. Become fluent in both. The professionals who will be most valuable in the next 10 years are those who understand X12 deeply and can bridge that knowledge into modern API integrations. I am actively learning FHIR alongside my EDI work  &mdash;  not because EDI is dying, but because the best opportunities will be at the intersection of both.</p>
+  <div class="art-tags">
+    <span class="tag">FHIR</span><span class="tag">APIs</span><span class="tag">Future of EDI</span><span class="tag">Career</span><span class="tag">HL7</span>
+  </div>
+</div>
+
+
+<script>
+function openArticle(id) {
+  var src = document.getElementById(id);
+  var dest = document.getElementById('art-body-content');
+  if (!src) return;
+
+  var html = src.innerHTML;
+  var authorCard = '<div class="author-box">'
+    + '<div class="av" style="width:50px;height:50px;font-size:1.1rem;flex-shrink:0;">TK</div>'
+    + '<div><div class="author-box-name">Tharun Kilaru</div>'
+    + '<div class="author-box-bio">Senior EDI Specialist with 4+ years of experience in HIPAA X12, Cleo Integration Cloud, and IBM Sterling. Former UHG, IBA, PetSmart, APL Logistics. MS Information Studies, Trine University.</div></div>'
+    + '</div>';
+  dest.innerHTML = html + authorCard;
+
+  document.getElementById('home-view').style.display = 'none';
+  var av = document.getElementById('article-view');
+  av.style.display = 'block';
+  av.scrollTop = 0;
+  document.getElementById('prog-bar').style.width = '0%';
+
+  var readTimeEl = av.querySelector('.art-meta span:last-child');
+  document.getElementById('art-read-time').textContent = readTimeEl ? readTimeEl.textContent : '';
+}
+
+function goHome() {
+  document.getElementById('article-view').style.display = 'none';
+  document.getElementById('home-view').style.display = 'block';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+document.getElementById('article-view').addEventListener('scroll', function() {
+  var scrolled = this.scrollTop;
+  var total = this.scrollHeight - this.clientHeight;
+  var pct = total > 0 ? (scrolled / total) * 100 : 0;
+  document.getElementById('prog-bar').style.width = pct + '%';
+});
+</script>
+</body>
+</html>
